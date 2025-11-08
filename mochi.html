@@ -4,10 +4,113 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Desk Mochi Using ESP32 | Karthik</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #1e293b;
+    }
+
+    .navbar a {
+      color: #94a3b8;
+      margin-left: 1.5rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      color: #38bdf8;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    /* --- Project Gallery Section --- */
+    .project-gallery {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin: 2rem auto;
+      max-width: 1200px;
+      flex-wrap: wrap;
+      padding: 0 1.5rem;
+    }
+
+    .media-box {
+      flex: 1 1 45%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 12px;
+      background-color: #1e293b;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 340px; /* Reduced height */
+      max-width: 100%;
+    }
+
+    .media-box:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    video, img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* ensures no video cropping */
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .caption {
+      text-align: center;
+      color: #cbd5e1;
+      margin-top: 1rem;
+      font-style: italic;
+    }
+
+    .section.dark {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+    }
+
+    /* --- Responsive Layout --- */
+    @media (max-width: 900px) {
+      .project-gallery {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .media-box {
+        width: 95%;
+        height: auto;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
+  <!-- Navigation -->
   <header class="navbar">
     <h1 class="logo">Karthik Tatineni</h1>
     <nav class="nav-links">
@@ -18,24 +121,23 @@
     </nav>
   </header>
 
-  <div style="margin-top: 2rem;">
-    <div class="project-gallery">
-      <video controls class="project-video">
+  <!-- Project Media -->
+  <div class="project-gallery">
+    <div class="media-box">
+      <video controls onclick="openFullscreen(this)">
         <source src="mochi.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
     </div>
+    <div class="media-box">
+      <img src="mochii.png" alt="Desk Mochi 3D Printed Model">
+    </div>
   </div>
 
-  <!-- Lightbox -->
-  <div id="lightbox" class="lightbox">
-    <span class="close-lightbox" onclick="closeLightbox()">✕</span>
-    <img id="lightbox-img" src="" alt="Full View" />
-  </div>
-
+  <!-- Description -->
   <section class="section dark">
     <h2>Desk Mochi – Smart ESP32 Desk Companion</h2>
-    <p style="margin-top: 2rem; line-height: 1.7; color: #cbd5e1;">
+    <p>
       Desk Mochi is an adorable ESP32-powered smart desk companion designed to keep you company while you work. 
       It features an OLED display that shows the current time, temperature, and weather information using data fetched from the OpenWeather API — all updated in real time through Wi-Fi.
       <br><br>
@@ -44,47 +146,41 @@
       The ESP32 acts as the brain, handling Wi-Fi connectivity, API communication, and display animations. It can run autonomously after configuration, fetching accurate weather and temperature data and displaying it in a visually appealing way.
       <br><br>
       The hardware setup includes:
-      - ESP32 microcontroller  
-      - 0.96" or 1.3" OLED display (I2C)  
-      - Optional button input for changing expressions or toggling info  
-      - Wi-Fi connection for live OpenWeather API data  
-      <br><br>
+      <ul>
+        <li>ESP32 microcontroller</li>
+        <li>0.96" or 1.3" OLED display (I2C)</li>
+        <li>Optional button input for changing expressions or toggling info</li>
+        <li>Wi-Fi connection for live OpenWeather API data</li>
+      </ul>
+      <br>
       Features include:
-      - Real-time time and weather updates  
-      - Multiple facial expressions and moods  
-      - OLED animations with smooth transitions  
-      - Offline fallback mode for clock display  
-      - Web configuration portal for Wi-Fi setup  
-      <br><br>
+      <ul>
+        <li>Real-time time and weather updates</li>
+        <li>Multiple facial expressions and moods</li>
+        <li>OLED animations with smooth transitions</li>
+        <li>Offline fallback mode for clock display</li>
+        <li>Web configuration portal for Wi-Fi setup</li>
+      </ul>
+      <br>
       Future improvements may include voice feedback, mobile app integration, or adding sensors for ambient light and motion detection to make Mochi even more interactive.
       <br><br>
       Desk Mochi represents the perfect combination of personality, technology, and creativity — turning your workspace into a smarter, friendlier environment.
+      This model was <strong>3D printed</strong> to achieve its designed shape and structure.
     </p>
   </section>
 
-
-  <!-- Lightbox Script -->
   <script>
-    const images = document.querySelectorAll('.clickable-image');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-
-    images.forEach(img => {
-      img.addEventListener('click', () => {
-        lightboxImg.src = img.src;
-        lightbox.style.display = 'flex';
-      });
-    });
-
-    function closeLightbox() {
-      lightbox.style.display = 'none';
-    }
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && lightbox.style.display === 'flex') {
-        closeLightbox();
+    // Make video open fullscreen when clicked
+    function openFullscreen(videoElement) {
+      if (videoElement.requestFullscreen) {
+        videoElement.requestFullscreen();
+      } else if (videoElement.webkitRequestFullscreen) { /* Safari */
+        videoElement.webkitRequestFullscreen();
+      } else if (videoElement.msRequestFullscreen) { /* IE11 */
+        videoElement.msRequestFullscreen();
       }
-    });
+    }
   </script>
+
 </body>
 </html>
